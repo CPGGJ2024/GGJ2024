@@ -41,3 +41,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: DrawLayer
+    uniqueID: 1099366099
+    locked: 0
