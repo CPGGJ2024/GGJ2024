@@ -8,10 +8,9 @@ public class PlayerController : MonoBehaviour
     {
         // Input handling
         float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
 
         // Calculate movement direction
-        Vector3 movement = new Vector3(horizontalInput, verticalInput, 0f).normalized;
+        Vector3 movement = new Vector3(horizontalInput, 0f, 0f).normalized;
 
         // Move the player
         MovePlayer(movement);
@@ -20,7 +19,7 @@ public class PlayerController : MonoBehaviour
     void MovePlayer(Vector3 direction)
     {
         // Check if there is any input
-        if (direction.magnitude >= 0.1f)
+        if (direction.magnitude > 0f)
         {
             // Calculate and apply the new position
             Vector3 newPosition = transform.position + direction * moveSpeed * Time.deltaTime;
