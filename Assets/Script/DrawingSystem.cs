@@ -125,21 +125,29 @@ public class DrawingSystem : MonoBehaviour
         LineRenderer pathRenderer = pathObject.AddComponent<LineRenderer>();
         pathRenderer.positionCount = positionCount;
         Vector3[] convertedPoints = new Vector3[points.Count];
+
         for (int i = 0; i < points.Count; i++)
         {
             convertedPoints[i] = new Vector3(points[i].x, points[i].y, 0);
         }
+
         pathRenderer.SetPositions(convertedPoints);
 
         pathRenderer.startWidth = brushSize;
         pathRenderer.endWidth = brushSize;
         pathRenderer.material.color = brushColor;
 
+        // Add EdgeCollider2D
+        EdgeCollider2D edgeCollider = pathObject.AddComponent<EdgeCollider2D>();
+        edgeCollider.points = points.ToArray(); // Use the points directly
+
         Rigidbody2D rigidbody2D = pathObject.AddComponent<Rigidbody2D>();
-        rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+        rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
+        pathRenderer.useWorldSpace = false;
 
         return rigidbody2D;
     }
+
 
     public void ApplyPhysics(Rigidbody2D rigidbody2D)
     {
