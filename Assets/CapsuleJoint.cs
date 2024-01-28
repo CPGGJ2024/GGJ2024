@@ -37,6 +37,7 @@ public class CapsuleJoint : MonoBehaviour
         {
             limbSpawner.Die(transform.parent.gameObject);
             limbHingeJoint.enabled = false;
+            Destroy(transform.parent.gameObject, 5f);
         }
     }
 
