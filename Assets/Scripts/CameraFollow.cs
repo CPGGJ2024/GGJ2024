@@ -3,40 +3,45 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     public Transform player;
-    public float smoothSpeed = 0.125f;
+    public float smoothSpeed = 0.1f;
     public Vector3 offset;
     public float deadzoneWidth = 2f;
     public float deadzoneHeight = 1.5f;
 
-    void LateUpdate()
+    private Vector3 velocity = Vector3.zero;
+    void Update()
     {
-        if (player == null)
-        {
-            // Ensure the player reference is set in the Unity editor
-            Debug.LogWarning("Player reference not set for CameraFollow script!");
-            return;
-        }
+        // if (player == null)
+        // {
+        //     // Ensure the player reference is set in the Unity editor
+        //     Debug.LogWarning("Player reference not set for CameraFollow script!");
+        //     return;
+        // }
 
-        // Get the target position
-        Vector3 targetPosition = player.position + offset;
+        // // Get the target position
+        // Vector3 targetPosition = player.position + offset;
+        // // Get the current camera boundaries
+        // Vector3 currentPosition = transform.position;
 
-        // Calculate the deadzone boundaries
-        float minX = targetPosition.x - deadzoneWidth / 2;
-        float maxX = targetPosition.x + deadzoneWidth / 2;
-        float minY = targetPosition.y - deadzoneHeight / 2;
-        float maxY = targetPosition.y + deadzoneHeight / 2;
+        // // Calculate the deadzone boundaries
+        // float minX = targetPosition.x - deadzoneWidth / 2;
+        // float maxX = targetPosition.x + deadzoneWidth / 2;
+        // float minY = targetPosition.y - deadzoneHeight / 2;
+        // float maxY = targetPosition.y + deadzoneHeight / 2;
 
-        // Get the current camera position
+        // // Smooth towards target position
+        // Vector3 toPosition = currentPosition + (targetPosition - currentPosition) * smoothSpeed;
+
+        // // Ensure the camera stays within the deadzone
+        // float newX = Mathf.Clamp(toPosition.x, minX, maxX);
+        // float newY = Mathf.Clamp(toPosition.y, minY, maxY);
+
+        // transform.position = new(newX, newY, currentPosition.z);
+
+
         Vector3 currentPosition = transform.position;
 
-        // Ensure the camera stays within the deadzone
-        float newX = Mathf.Clamp(currentPosition.x, minX, maxX);
-        float newY = Mathf.Clamp(currentPosition.y, minY, maxY);
-
-        // Set the target position within the deadzone
-        Vector3 smoothedPosition = new Vector3(newX, newY, currentPosition.z);
-
-        // Use Lerp to smoothly move towards the target position
-        transform.position = Vector3.Lerp(currentPosition, smoothedPosition, smoothSpeed);
+        transform.position = Vector3.SmoothDamp(transform.position, player.position, ref velocity, smoothSpeed);
+        transform.position = new(transform.position.x, transform.position.y, currentPosition.z);
     }
 }

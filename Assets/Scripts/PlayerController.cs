@@ -2,7 +2,16 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
+    public float moveSpeed = 0.5f;
+
+    public float maxHorizVel = 5f;
+    private Vector3 velocity = Vector3.zero;
+    private Rigidbody2D rb;
+
+    void Start()
+    {
+        rb = gameObject.GetComponent<Rigidbody2D>();
+    }
 
     void Update()
     {
@@ -10,20 +19,12 @@ public class PlayerController : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
 
         // Calculate movement direction
-        Vector3 movement = new Vector3(horizontalInput, 0f, 0f).normalized;
+        Vector2 movement = new Vector2(horizontalInput, 0f).normalized;
 
-        // Move the player
-        MovePlayer(movement);
-    }
-
-    void MovePlayer(Vector3 direction)
-    {
-        // Check if there is any input
-        if (direction.magnitude > 0f)
+        if (movement.magnitude > 0.1f && rb.velocity.x > -maxHorizVel &&  rb.velocity.x < maxHorizVel)
         {
             // Calculate and apply the new position
-            Vector3 newPosition = transform.position + direction * moveSpeed * Time.deltaTime;
-            transform.position = newPosition;
+            rb.AddForce(movement * moveSpeed);
         }
     }
 }
