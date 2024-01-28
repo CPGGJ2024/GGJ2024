@@ -164,7 +164,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -367,6 +367,12 @@ MonoBehaviour:
   motorSpeed: 1000
   control: 32
   limbSpawner: {fileID: 0}
+  boneBreakSounds:
+  - {fileID: 8300000, guid: 67ae0a0a4d12b8e44acf8ef4c558de73, type: 3}
+  - {fileID: 8300000, guid: b3e53febf4473c7428640b93fda533cf, type: 3}
+  - {fileID: 8300000, guid: e63325a1194583b429d9ce81ffb97ef2, type: 3}
+  - {fileID: 8300000, guid: a3118606c0f42e641a33d32ef340ee46, type: 3}
+  - {fileID: 8300000, guid: 503de6775a9b2044c8b91442364873cd, type: 3}
 --- !u!1 &4951078621641019308
 GameObject:
   m_ObjectHideFlags: 0

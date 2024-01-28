@@ -9,6 +9,7 @@ public class CapsuleJoint : MonoBehaviour
     public int motorSpeed = 400;
     public KeyCode control = KeyCode.Space;
     public LimbSpawner limbSpawner;
+    public AudioClip[] boneBreakSounds;
 
     void Start()
     {
@@ -33,8 +34,9 @@ public class CapsuleJoint : MonoBehaviour
         {
             StartCoroutine(FlexLimbForDuration(-motorSpeed, 0.5f));
         }
-        if (Input.GetKey(KeyCode.Y))
+        if (Input.GetKeyDown(KeyCode.Y))
         {
+            SoundManager.instance.PlayRandomSoundFXClip(boneBreakSounds, transform, 1f);
             limbSpawner.Die(transform.parent.gameObject);
             limbHingeJoint.enabled = false;
             Destroy(transform.parent.gameObject, 5f);
