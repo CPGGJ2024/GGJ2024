@@ -297,8 +297,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
+  m_Offset: {x: 0, y: 0.24}
+  m_Size: {x: 1, y: 2.49}
   m_Direction: 0
 --- !u!50 &918082251403806949
 Rigidbody2D:
@@ -347,7 +347,7 @@ HingeJoint2D:
   m_UseMotor: 1
   m_Motor:
     m_MotorSpeed: -1000
-    m_MaximumMotorForce: 10000
+    m_MaximumMotorForce: 1000
   m_UseLimits: 1
   m_AngleLimits:
     m_LowerAngle: -133.89084
@@ -365,6 +365,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   motorSpeed: 1000
+  control: 32
+  limbSpawner: {fileID: 0}
 --- !u!1 &4951078621641019308
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,13 +393,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4951078621641019308}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.7111063, w: 0.7030846}
-  m_LocalPosition: {x: -0.56, y: 1, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: -0.5, y: 1, z: 0}
   m_LocalScale: {x: 0.5, y: 1.71, z: 0.83}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8502842021865353507}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90.65}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!212 &4842639836243687523
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -616,7 +618,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 1, y: 2.5}
   m_Direction: 0
 --- !u!50 &2496713670297315782
 Rigidbody2D:

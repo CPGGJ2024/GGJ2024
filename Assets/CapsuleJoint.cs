@@ -1,16 +1,22 @@
+using System;
+using System.Collections;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class CapsuleJoint : MonoBehaviour
 {
-    private HingeJoint2D hingeJoint;
+    private HingeJoint2D limbHingeJoint;
     public int motorSpeed = 400;
+    public KeyCode control = KeyCode.Space;
+    public LimbSpawner limbSpawner;
 
     void Start()
     {
+        limbSpawner = GameObject.Find("LimbSpawner").GetComponent<LimbSpawner>();
         // Add HingeJoint2D component to the current GameObject
-        hingeJoint = gameObject.GetComponent<HingeJoint2D>();
+        limbHingeJoint = gameObject.GetComponent<HingeJoint2D>();
 
-        if (hingeJoint == null)
+        if (limbHingeJoint == null)
         {
             // Display a warning if the HingeJoint2D component is not found
             Debug.LogWarning("HingeJoint2D component not found on GameObject: " + gameObject.name);
@@ -19,23 +25,35 @@ public class CapsuleJoint : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(control))
         {
             FlexLimb(motorSpeed);
         }
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(control))
         {
-            FlexLimb(-motorSpeed);
+            StartCoroutine(FlexLimbForDuration(-motorSpeed, 0.5f));
+        }
+        if (Input.GetKey(KeyCode.Y))
+        {
+            limbSpawner.Die(transform.parent.gameObject);
+            limbHingeJoint.enabled = false;
         }
     }
 
     void FlexLimb(int newSpeed)
     {
-        JointMotor2D newMotor = hingeJoint.motor;
+        JointMotor2D newMotor = limbHingeJoint.motor;
    
         newMotor.motorSpeed = newSpeed;
 
         // Apply the modified motor to the HingeJoint2D component
-        hingeJoint.motor = newMotor;
+        limbHingeJoint.motor = newMotor;
+    }
+
+    IEnumerator FlexLimbForDuration(int newSpeed, float duration)
+    {
+        FlexLimb(newSpeed);
+        yield return new WaitForSeconds(duration);
+        FlexLimb(0);
     }
 }

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
 
@@ -9,13 +11,18 @@ public class LimbSpawner : MonoBehaviour
     private GameObject currentLimb;
     private bool isDragging = false;
     private RaycastHit2D rayHit;
+    private List<KeyCode> availableControls = new List<KeyCode> { KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.J, KeyCode.K, KeyCode.L };
+    private Dictionary<GameObject, Tuple<FixedJoint2D, KeyCode>> spawnedLimbs = new Dictionary<GameObject, Tuple<FixedJoint2D, KeyCode>>();
 
     void Update()
     {
         // Spawn a new limb when the mouse button is pressed
         if (Input.GetMouseButtonDown(0))
         {
-            SpawnLimb();
+            if (availableControls.Count > 0)
+            {
+                SpawnLimb();
+            }
         }
 
         // Drag the limb if it exists and the mouse button is held down
@@ -31,7 +38,7 @@ public class LimbSpawner : MonoBehaviour
         }
 
         // Check for the "R" key press to flip the limb prefab
-        if (isDragging && Input.GetKeyDown(KeyCode.R))
+        if (isDragging && Input.GetKeyDown(KeyCode.Mouse1))
         {
             FlipLimbPrefab();
         }
@@ -91,6 +98,16 @@ public class LimbSpawner : MonoBehaviour
         armRigidbody.bodyType = RigidbodyType2D.Dynamic;
         forearmRigidbody.bodyType = RigidbodyType2D.Dynamic;
 
+        // Assign a control key from the available controls
+        if (availableControls.Count > 0)
+        {
+            KeyCode controlKey = availableControls[0];
+            currentLimb.GetComponentInChildren<CapsuleJoint>().control = controlKey;
+            availableControls.RemoveAt(0);
+            Tuple<FixedJoint2D, KeyCode> newTuple = new Tuple<FixedJoint2D, KeyCode>(closestJoint, controlKey);
+            spawnedLimbs.Add(currentLimb, newTuple);
+        }
+
         currentLimb = null;
     }
 
@@ -104,7 +121,7 @@ public class LimbSpawner : MonoBehaviour
         FixedJoint2D fixedJoint = connectedObject.AddComponent<FixedJoint2D>();
 
         // Set the connected body and connected anchor
-        fixedJoint.connectedBody = connectedRigidbody;
+        //fixedJoint.connectedBody = connectedRigidbody;
         fixedJoint.connectedAnchor = connectedRigidbody.transform.InverseTransformPoint(jointPosition);
         fixedJoint.anchor = connectedObject.transform.InverseTransformPoint(jointPosition);
 
@@ -123,5 +140,13 @@ public class LimbSpawner : MonoBehaviour
         JointAngleLimits2D limts = arm.transform.GetComponent<HingeJoint2D>().limits;
         limts.min *= -1;
         arm.transform.GetComponent<HingeJoint2D>().limits = limts;
+    }
+
+    public void Die(GameObject limb)
+    {
+        KeyCode releasedControl = spawnedLimbs[limb].Item2;
+        spawnedLimbs[limb].Item1.breakForce = 0;
+        availableControls.Add(releasedControl);
+        spawnedLimbs.Remove(limb);
     }
 }
