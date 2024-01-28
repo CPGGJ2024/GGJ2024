@@ -16,6 +16,8 @@ public class SpawnInfiniteStairs : MonoBehaviour
     public int initialStairs = 10;
     public int maxSpawnedStairs = 60;
 
+    private bool started = false;
+
     private Vector3 curSpawnLoc;
     private Queue<GameObject> stairQueue = new Queue<GameObject>();
     // Start is called before the first frame update
@@ -30,9 +32,16 @@ public class SpawnInfiniteStairs : MonoBehaviour
         }
     }
 
+    public void addStairs()
+    {
+        started = true;
+        player = GameObject.Find("PathObject").transform;
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (started)
         while(MathF.Abs(player.position.y - curSpawnLoc.y) < 20)
         {
             GameObject newStair = Instantiate(stair, curSpawnLoc, Quaternion.identity);
