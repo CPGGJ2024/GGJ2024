@@ -14,6 +14,10 @@ public class LimbSpawner : MonoBehaviour
     private List<KeyCode> availableControls = new List<KeyCode> { KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.J, KeyCode.K, KeyCode.L };
     private Dictionary<GameObject, Tuple<FixedJoint2D, KeyCode>> spawnedLimbs = new Dictionary<GameObject, Tuple<FixedJoint2D, KeyCode>>();
 
+    public AudioClip spawnLimbSound;
+    public AudioClip placeLimbSound;
+    public AudioClip[] swapSounds;
+
     void Update()
     {
         // Spawn a new limb when the mouse button is pressed
@@ -21,6 +25,7 @@ public class LimbSpawner : MonoBehaviour
         {
             if (availableControls.Count > 0)
             {
+                SoundManager.instance.PlaySoundFXClip(spawnLimbSound, transform, 1f);
                 SpawnLimb();
             }
         }
@@ -35,11 +40,13 @@ public class LimbSpawner : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && currentLimb != null)
         {
             ReleaseLimb();
+            SoundManager.instance.PlaySoundFXClip(placeLimbSound, transform, 1f);
         }
 
         // Check for the "R" key press to flip the limb prefab
         if (isDragging && Input.GetKeyDown(KeyCode.Mouse1))
         {
+            SoundManager.instance.PlayRandomSoundFXClip(swapSounds, transform, 1f);
             FlipLimbPrefab();
         }
     }
