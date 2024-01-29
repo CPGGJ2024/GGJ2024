@@ -26,11 +26,11 @@ public class CapsuleJoint : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(control))
+        if (Input.GetKeyDown(control) || Input.GetKeyDown(KeyCode.Space))
         {
             FlexLimb(motorSpeed);
         }
-        if (Input.GetKeyUp(control))
+        if (Input.GetKeyUp(control) || Input.GetKeyUp(KeyCode.Space))
         {
             StartCoroutine(FlexLimbForDuration(-motorSpeed, 0.5f));
         }

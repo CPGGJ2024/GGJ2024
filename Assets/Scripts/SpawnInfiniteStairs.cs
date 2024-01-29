@@ -16,11 +16,20 @@ public class SpawnInfiniteStairs : MonoBehaviour
     public int initialStairs = 10;
     public int maxSpawnedStairs = 60;
 
+    private bool started = false;
+
     private Vector3 curSpawnLoc;
     private Queue<GameObject> stairQueue = new Queue<GameObject>();
     // Start is called before the first frame update
     void Start()
     {
+        // Spawn the Backboard
+        for (int i = 0; i < 10; i++)
+        {
+            GameObject newStair = Instantiate(stair, initialSpawnLoc + new Vector3(-10f, (i - 1f) * 4f, 0f), Quaternion.identity);
+            stairQueue.Enqueue(newStair);
+        }
+        // Spawn the First few stairs
         curSpawnLoc = initialSpawnLoc;
         for (int i = 0; i < initialStairs; i++)
         {
@@ -29,19 +38,28 @@ public class SpawnInfiniteStairs : MonoBehaviour
             curSpawnLoc += new Vector3(stairWidthOffset, stairHeightOffset * -1, 0f);
         }
     }
+        
 
     // Update is called once per frame
     void Update()
     {
-        while(MathF.Abs(player.position.y - curSpawnLoc.y) < 20)
+        if (GameObject.Find("PathObject") != null)
         {
-            GameObject newStair = Instantiate(stair, curSpawnLoc, Quaternion.identity);
-            stairQueue.Enqueue(newStair);
-            curSpawnLoc += new Vector3(stairWidthOffset, stairHeightOffset * -1, 0f);
+            started = true;
+            player = GameObject.Find("PathObject").transform;
         }
-        while(stairQueue.Count > maxSpawnedStairs)
+        if (started)
         {
-            Destroy(stairQueue.Dequeue());
+            while(MathF.Abs(player.position.y - curSpawnLoc.y) < 20)
+            {
+                GameObject newStair = Instantiate(stair, curSpawnLoc, Quaternion.identity);
+                stairQueue.Enqueue(newStair);
+                curSpawnLoc += new Vector3(stairWidthOffset, stairHeightOffset * -1, 0f);
+            }
+            while(stairQueue.Count > maxSpawnedStairs)
+            {
+                Destroy(stairQueue.Dequeue());
+            }
         }
     }
 }

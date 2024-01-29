@@ -68,7 +68,6 @@ public class DrawingSystem : MonoBehaviour
             currentLine.material.color = brushColor;
 
             Rigidbody2D rigidbody2D = ConvertToRigidbody2D(currentLine.positionCount, pointsList);
-            ApplyPhysics(rigidbody2D);
             Destroy(currentLine.gameObject);
         }
     }
@@ -143,20 +142,22 @@ public class DrawingSystem : MonoBehaviour
 
         Rigidbody2D rigidbody2D = pathObject.AddComponent<Rigidbody2D>();
         rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
+        rigidbody2D.gravityScale = 0f; // Set gravity to 0
         pathRenderer.useWorldSpace = false;
 
         return rigidbody2D;
     }
 
 
-    public void ApplyPhysics(Rigidbody2D rigidbody2D)
+
+    public void ApplyGravity()
     {
-        // Add any additional physics-related settings here
+        Rigidbody2D rigidbody2D = GameObject.Find("PathObject").GetComponent<Rigidbody2D>();
+        rigidbody2D.gravityScale = 1f; // Set gravity to 1
     }
 
     public void Redraw()
     {
-        Debug.Log("here");
         // Clear existing drawn points
         pointsList.Clear();
 

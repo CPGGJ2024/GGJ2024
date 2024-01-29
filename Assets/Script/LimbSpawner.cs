@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class LimbSpawner : MonoBehaviour
 {
     public GameObject limbPrefab; // Prefab of the limb object
-    public GameObject body; // Reference to the body GameObject
+    public GameObject startButton;
+    public AudioClip spawnLimbSound;
+    public AudioClip placeLimbSound;
+    public AudioClip[] swapSounds;
 
     private GameObject currentLimb;
     private bool isDragging = false;
@@ -14,12 +16,38 @@ public class LimbSpawner : MonoBehaviour
     private List<KeyCode> availableControls = new List<KeyCode> { KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.J, KeyCode.K, KeyCode.L };
     private Dictionary<GameObject, Tuple<FixedJoint2D, KeyCode>> spawnedLimbs = new Dictionary<GameObject, Tuple<FixedJoint2D, KeyCode>>();
 
-    public AudioClip spawnLimbSound;
-    public AudioClip placeLimbSound;
-    public AudioClip[] swapSounds;
+    private GameObject body; // Reference to the body GameObject
+
+    void Start()
+    {
+        FindBody();
+    }
+
+    void FindBody()
+    {
+        // Attempt to find the PathObject as the body in the scene
+        body = GameObject.Find("PathObject");
+
+        if (body != null)
+        {
+            // Body found, allow limb spawning
+            Debug.Log("PathObject (Body) found.");
+        }
+        else
+        {
+            Debug.LogWarning("PathObject (Body) not found in the scene. Limb spawning is disabled.");
+        }
+    }
 
     void Update()
     {
+        // Only proceed if the body (PathObject) is found
+        if (body == null)
+        {
+            FindBody(); // Attempt to find the body if not found
+            return;
+        }
+
         // Spawn a new limb when the mouse button is pressed
         if (Input.GetMouseButtonDown(0))
         {
@@ -68,7 +96,7 @@ public class LimbSpawner : MonoBehaviour
         currentLimb.transform.position = mousePosition;
 
         // Raycast from the attachment point to the body's surface
-        RaycastHit2D hit = Physics2D.Raycast(currentLimb.transform.Find("Arm").transform.Find("AttachmentPoint").position, body.transform.position- currentLimb.transform.Find("Arm").transform.Find("AttachmentPoint").position);
+        RaycastHit2D hit = Physics2D.Raycast(currentLimb.transform.Find("Arm").transform.Find("AttachmentPoint").position, body.transform.position - currentLimb.transform.Find("Arm").transform.Find("AttachmentPoint").position);
         // Rotate the limb to align with the surface normal
         Quaternion rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
         currentLimb.transform.rotation = rotation;
@@ -79,11 +107,7 @@ public class LimbSpawner : MonoBehaviour
     {
         // Detach the limb
         isDragging = false;
-        FixedJoint2D closestJoint= CreateFixedJoint(rayHit.point, rayHit.collider.gameObject);
-
-        closestJoint.connectedBody = currentLimb.transform.Find("Arm").GetComponent<Rigidbody2D>();
-        closestJoint.connectedBody.transform.TransformPoint(closestJoint.connectedAnchor);
-
+        FixedJoint2D closestJoint = CreateFixedJoint(rayHit.point, rayHit.collider.gameObject);
 
         if (closestJoint != null)
         {
@@ -115,8 +139,16 @@ public class LimbSpawner : MonoBehaviour
             spawnedLimbs.Add(currentLimb, newTuple);
         }
 
+        // Change gravity to 0 and make limbs static
+/*        armRigidbody.gravityScale = 0f;
+        armRigidbody.bodyType = RigidbodyType2D.Static;
+        forearmRigidbody.gravityScale = 0f;
+        forearmRigidbody.bodyType = RigidbodyType2D.Static;*/
+
         currentLimb = null;
     }
+
+
 
     FixedJoint2D CreateFixedJoint(Vector2 jointPosition, GameObject connectedObject)
     {
@@ -128,7 +160,7 @@ public class LimbSpawner : MonoBehaviour
         FixedJoint2D fixedJoint = connectedObject.AddComponent<FixedJoint2D>();
 
         // Set the connected body and connected anchor
-        //fixedJoint.connectedBody = connectedRigidbody;
+        fixedJoint.connectedBody = connectedRigidbody;
         fixedJoint.connectedAnchor = connectedRigidbody.transform.InverseTransformPoint(jointPosition);
         fixedJoint.anchor = connectedObject.transform.InverseTransformPoint(jointPosition);
 
@@ -144,9 +176,9 @@ public class LimbSpawner : MonoBehaviour
         currentLimb.transform.localScale = scale;
         CapsuleJoint arm = currentLimb.GetComponentInChildren<CapsuleJoint>();
         arm.motorSpeed *= -1;
-        JointAngleLimits2D limts = arm.transform.GetComponent<HingeJoint2D>().limits;
-        limts.min *= -1;
-        arm.transform.GetComponent<HingeJoint2D>().limits = limts;
+        JointAngleLimits2D limits = arm.transform.GetComponent<HingeJoint2D>().limits;
+        limits.min *= -1;
+        arm.transform.GetComponent<HingeJoint2D>().limits = limits;
     }
 
     public void Die(GameObject limb)
@@ -157,3 +189,4 @@ public class LimbSpawner : MonoBehaviour
         spawnedLimbs.Remove(limb);
     }
 }
+

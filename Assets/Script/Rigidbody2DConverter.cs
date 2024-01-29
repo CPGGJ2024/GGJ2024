@@ -17,8 +17,5 @@ public class Rigidbody2DConverter : MonoBehaviour
 
         // Convert the drawn path to Rigidbody2D
         Rigidbody2D rigidbody2D = drawingSystem.ConvertToRigidbody2D(drawingSystem.currentLine.positionCount, drawingSystem.pointsList);
-
-        // Apply physics to the Rigidbody2D
-        drawingSystem.ApplyPhysics(rigidbody2D);
     }
 }
