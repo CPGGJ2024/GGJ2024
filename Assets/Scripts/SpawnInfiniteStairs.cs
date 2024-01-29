@@ -32,15 +32,14 @@ public class SpawnInfiniteStairs : MonoBehaviour
         }
     }
 
-    public void addStairs()
-    {
-        started = true;
-        player = GameObject.Find("PathObject").transform;
-    }
-
     // Update is called once per frame
     void Update()
     {
+        if (GameObject.Find("PathObject") != null)
+        {
+            started = true;
+            player = GameObject.Find("PathObject").transform;
+        }
         if (started)
         while(MathF.Abs(player.position.y - curSpawnLoc.y) < 20)
         {

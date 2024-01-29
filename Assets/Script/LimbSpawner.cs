@@ -5,6 +5,7 @@ using UnityEngine;
 public class LimbSpawner : MonoBehaviour
 {
     public GameObject limbPrefab; // Prefab of the limb object
+    public GameObject startButton;
     public AudioClip spawnLimbSound;
     public AudioClip placeLimbSound;
     public AudioClip[] swapSounds;
